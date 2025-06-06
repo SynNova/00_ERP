@@ -35,38 +35,25 @@ export default async function handler(req, res) {
   const connectionId = Date.now().toString();
   
   try {
-    // Verificar se é uma requisição inicial de conexão
-    if (req.headers.accept && req.headers.accept.includes('text/event-stream')) {
-      // Resposta SSE real
-      res.write(`data: {"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"tools":{},"resources":{}}}}\n\n`);
-      
-      // Manter conexão simples
-      const keepAlive = setInterval(() => {
-        res.write(`data: {"jsonrpc":"2.0","method":"notifications/message","params":{"level":"info","message":"Server alive"}}\n\n`);
-      }, 30000);
+    // Sempre responder como SSE
+    res.write(`data: {"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"tools":{},"resources":{},"logging":{}}}}\n\n`);
+    
+    // Enviar lista de tools disponíveis
+    res.write(`data: {"jsonrpc":"2.0","method":"tools/list","result":{"tools":[{"name":"listar_clientes","description":"Lista clientes cadastrados"},{"name":"buscar_cliente","description":"Busca cliente por ID/nome"},{"name":"listar_produtos","description":"Lista produtos"},{"name":"buscar_produto","description":"Busca produto por ID/nome"}]}}\n\n`);
+    
+    // Manter conexão viva
+    const keepAlive = setInterval(() => {
+      res.write(`data: {"jsonrpc":"2.0","method":"ping"}\n\n`);
+    }, 25000);
 
-      req.on('close', () => {
-        console.log('🔌 Cliente desconectado');
-        clearInterval(keepAlive);
-      });
+    req.on('close', () => {
+      console.log('🔌 Cliente desconectado');
+      clearInterval(keepAlive);
+    });
 
-      // Timeout menor
-      setTimeout(() => {
-        clearInterval(keepAlive);
-        res.end();
-      }, 10000);
-    } else {
-      // Resposta JSON simples para verificação
-      res.status(200).json({
-        type: 'mcp-server',
-        status: 'ready',
-        protocol: 'sse',
-        endpoints: {
-          sse: '/sse',
-          rpc: '/rpc'
-        }
-      });
-    }
+    req.on('error', () => {
+      clearInterval(keepAlive);
+    });
 
   } catch (error) {
     console.error('❌ Erro na conexão SSE:', error);
