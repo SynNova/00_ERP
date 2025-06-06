@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sse",
+      "dest": "/api/sse"
+    },
+    {
+      "src": "/rpc",
+      "dest": "/api/rpc"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/health"
+    },
+    {
+      "src": "/",
+      "dest": "/api/index"
+    }
+  ],
+  "env": {
+    "VHSYS_TOKEN": "@vhsys_token",
+    "VHSYS_SECRET": "@vhsys_secret",
+    "VHSYS_BASE_URL": "@vhsys_base_url"
+  },
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+} 

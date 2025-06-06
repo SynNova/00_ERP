@@ -1,0 +1,28 @@
+# Arquivos de desenvolvimento
+node_modules
+.git
+.env.local
+.env.development
+.vscode
+.cursor
+
+# Arquivos TypeScript - apenas as versões JS são necessárias
+src/
+build/
+tsconfig.json
+
+# Arquivos de teste
+tests/
+
+# Arquivos de configuração local
+config/
+
+# Scripts
+scripts/
+
+# Documentação
+docs/
+
+# Cache
+.npm
+.cache 

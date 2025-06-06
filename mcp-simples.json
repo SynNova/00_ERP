@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "vhsys": {
-      "command": "node",
-      "args": ["build/index.js"]
-    }
-  }
-} 

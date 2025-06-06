@@ -197,7 +197,7 @@ server.tool(
       
       // Verificar variáveis de ambiente
       const token = process.env.VHSYS_TOKEN;
-      const secretToken = process.env.VHSYS_SECRET;
+      const secretToken = process.env.VHSYS_SECRET_TOKEN;
       const baseURL = process.env.VHSYS_BASE_URL;
       
       console.error(`🔍 [DEBUG] Token: ${token ? token.substring(0, 10) + '...' : 'NÃO DEFINIDO'}`);

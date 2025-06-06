@@ -10,7 +10,11 @@
     "dev": "tsc && node build/index.js",
     "test": "npx @modelcontextprotocol/inspector node build/index.js",
     "remote": "node src/remote-mcp-server.js",
-    "remote:dev": "npm run build && node src/remote-mcp-server.js"
+    "remote:dev": "npm run build && node src/remote-mcp-server.js",
+    "vercel:build": "echo 'Build completed for Vercel'",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel",
+    "deploy": "node scripts/deploy-vercel.sh || scripts\\deploy-vercel.bat"
   },
   "keywords": [
     "mcp",

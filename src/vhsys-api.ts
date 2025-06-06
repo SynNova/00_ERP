@@ -77,12 +77,12 @@ export class VHSysAPI {
   constructor() {
     this.config = {
       token: process.env.VHSYS_TOKEN || '',
-      secretToken: process.env.VHSYS_SECRET || '',
+      secretToken: process.env.VHSYS_SECRET_TOKEN || '',
       baseURL: process.env.VHSYS_BASE_URL || 'https://api.vhsys.com.br/v2'
     };
 
     if (!this.config.token || !this.config.secretToken) {
-      throw new Error('VHSYS_TOKEN e VHSYS_SECRET são obrigatórios no arquivo .env');
+      throw new Error('VHSYS_TOKEN e VHSYS_SECRET_TOKEN são obrigatórios no arquivo .env');
     }
 
     this.api = axios.create({
