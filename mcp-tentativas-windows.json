@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "vhsys-batch": {
+      "command": "D:/SynNova Software e Soluções Ltda/SynNova - Corporativo - Documentos/02_PRODUÇÃO/00_ERP/start-mcp-server.bat",
+      "args": []
+    },
+    "vhsys-cmd": {
+      "command": "cmd",
+      "args": ["/c", "node", "D:/SynNova Software e Soluções Ltda/SynNova - Corporativo - Documentos/02_PRODUÇÃO/00_ERP/build/index.js"],
+      "env": {
+        "VHSYS_TOKEN": "ZDabNAdHZaEKQUBQERUNFSNAIdKHHJ",
+        "VHSYS_SECRET": "33DnRiebFchQb2GyrVNTKxPHY6C8q",
+        "VHSYS_BASE_URL": "https://api.vhsys.com.br/v2"
+      }
+    }
+  }
+} 

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Teste API VHSys - SynNova ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .test-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .result.loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-loading { 
+            background: #ffc107; 
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .credentials {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Teste API VHSys</h1>
+            <p>Verificação de conectividade e funcionalidade da API</p>
+        </div>
+
+        <div class="credentials">
+            <h3>📋 Configurações Utilizadas:</h3>
+            <p><strong>Base URL:</strong> <span id="baseUrl">https://api.vhsys.com.br/v2</span></p>
+            <p><strong>Token:</strong> <span id="tokenDisplay">ZDabNAdHZaEKQUBQERUNFSNAIdKHHJ...</span></p>
+            <p><strong>Secret Token:</strong> <span id="secretDisplay">33DnRiebFchQb2GyrVNTKxPHY6C8q...</span></p>
+        </div>
+
+        <!-- Teste 1: Conectividade Básica -->
+        <div class="test-section">
+            <h2>
+                <span class="status-indicator" id="status1"></span>
+                1️⃣ Teste de Conectividade
+            </h2>
+            <p>Verificar se a API VHSys está respondendo</p>
+            <button class="btn" onclick="testeConectividade()">🔗 Testar Conexão</button>
+            <div id="result1" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Teste 2: Listar Clientes -->
+        <div class="test-section">
+            <h2>
+                <span class="status-indicator" id="status2"></span>
+                2️⃣ Teste de Listagem de Clientes
+            </h2>
+            <p>Buscar os primeiros 5 clientes cadastrados</p>
+            <button class="btn" onclick="testeListarClientes()">👥 Listar Clientes</button>
+            <div id="result2" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Teste 3: Listar Produtos -->
+        <div class="test-section">
+            <h2>
+                <span class="status-indicator" id="status3"></span>
+                3️⃣ Teste de Listagem de Produtos
+            </h2>
+            <p>Buscar os primeiros 5 produtos cadastrados</p>
+            <button class="btn" onclick="testeListarProdutos()">📦 Listar Produtos</button>
+            <div id="result3" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Teste 4: Dashboard Vendas -->
+        <div class="test-section">
+            <h2>
+                <span class="status-indicator" id="status4"></span>
+                4️⃣ Teste de Dashboard
+            </h2>
+            <p>Buscar dados do dashboard de vendas</p>
+            <button class="btn" onclick="testeDashboard()">📊 Carregar Dashboard</button>
+            <div id="result4" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Teste Completo -->
+        <div class="test-section">
+            <h2>🚀 Executar Todos os Testes</h2>
+            <button class="btn" onclick="executarTodosTestes()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                ▶️ Executar Bateria Completa
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configurações da API VHSys
+        const config = {
+            baseURL: 'https://api.vhsys.com.br/v2',
+            token: 'ZDabNAdHZaEKQUBQERUNFSNAIdKHHJ',
+            secretToken: '33DnRiebFchQb2GyrVNTKxPHY6C8q',
+            headers: {
+                'Authorization': `Bearer ZDabNAdHZaEKQUBQERUNFSNAIdKHHJ`,
+                'X-Secret-Token': '33DnRiebFchQb2GyrVNTKxPHY6C8q',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+
+        // Função utilitária para fazer requisições
+        async function fazerRequisicao(endpoint) {
+            const url = `${config.baseURL}${endpoint}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: config.headers,
+                    mode: 'cors'
+                });
+
+                const dadosResposta = {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok,
+                    headers: Object.fromEntries(response.headers.entries())
+                };
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return { sucesso: true, dados: data, info: dadosResposta };
+                } else {
+                    const errorData = await response.text();
+                    return { 
+                        sucesso: false, 
+                        erro: `HTTP ${response.status}: ${response.statusText}`,
+                        detalhes: errorData,
+                        info: dadosResposta
+                    };
+                }
+            } catch (error) {
+                return { 
+                    sucesso: false, 
+                    erro: error.message,
+                    tipo: error.name,
+                    detalhes: 'Erro de conectividade ou CORS'
+                };
+            }
+        }
+
+        // Função para mostrar resultado
+        function mostrarResultado(testNumber, resultado, loading = false) {
+            const resultDiv = document.getElementById(`result${testNumber}`);
+            const statusIcon = document.getElementById(`status${testNumber}`);
+            
+            resultDiv.style.display = 'block';
+            
+            if (loading) {
+                resultDiv.className = 'result loading';
+                statusIcon.className = 'status-indicator status-loading';
+                resultDiv.textContent = '⏳ Executando teste... Por favor aguarde.';
+                return;
+            }
+
+            if (resultado.sucesso) {
+                resultDiv.className = 'result success';
+                statusIcon.className = 'status-indicator status-success';
+                resultDiv.textContent = `✅ SUCESSO!\n\n${JSON.stringify(resultado.dados, null, 2)}`;
+            } else {
+                resultDiv.className = 'result error';
+                statusIcon.className = 'status-indicator status-error';
+                resultDiv.textContent = `❌ ERRO!\n\nTipo: ${resultado.tipo || 'Erro da API'}\nMensagem: ${resultado.erro}\nDetalhes: ${resultado.detalhes || 'N/A'}`;
+                
+                if (resultado.info) {
+                    resultDiv.textContent += `\n\nInfo da Resposta:\n${JSON.stringify(resultado.info, null, 2)}`;
+                }
+            }
+        }
+
+        // Teste 1: Conectividade
+        async function testeConectividade() {
+            mostrarResultado(1, null, true);
+            
+            // Tentar um endpoint simples primeiro
+            const resultado = await fazerRequisicao('/clientes?limite=1');
+            mostrarResultado(1, resultado);
+        }
+
+        // Teste 2: Listar Clientes
+        async function testeListarClientes() {
+            mostrarResultado(2, null, true);
+            const resultado = await fazerRequisicao('/clientes?limite=5');
+            mostrarResultado(2, resultado);
+        }
+
+        // Teste 3: Listar Produtos
+        async function testeListarProdutos() {
+            mostrarResultado(3, null, true);
+            const resultado = await fazerRequisicao('/produtos?limite=5');
+            mostrarResultado(3, resultado);
+        }
+
+        // Teste 4: Dashboard
+        async function testeDashboard() {
+            mostrarResultado(4, null, true);
+            
+            // Como não temos endpoint específico de dashboard, vamos simular
+            const hoje = new Date().toISOString().split('T')[0];
+            const resultado = await fazerRequisicao(`/pedidos?data_inicio=${hoje}&data_fim=${hoje}&limite=10`);
+            
+            if (resultado.sucesso) {
+                resultado.dados = {
+                    message: "Dados de vendas de hoje",
+                    data: hoje,
+                    vendas: resultado.dados
+                };
+            }
+            
+            mostrarResultado(4, resultado);
+        }
+
+        // Executar todos os testes
+        async function executarTodosTestes() {
+            console.log('🚀 Iniciando bateria completa de testes...');
+            
+            await testeConectividade();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testeListarClientes();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testeListarProdutos();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testeDashboard();
+            
+            console.log('✅ Bateria de testes concluída!');
+        }
+
+        // Executar teste de conectividade automaticamente ao carregar
+        window.onload = function() {
+            console.log('🔧 Página de teste carregada. Execute os testes clicando nos botões.');
+            console.log('📋 Configurações:', config);
+        };
+    </script>
+</body>
+</html> 

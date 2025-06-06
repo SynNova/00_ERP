@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste API VHSys</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 5px; font-family: monospace; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste API VHSys</h1>
+        
+        <div class="test">
+            <h3>1. Teste de Conectividade</h3>
+            <button class="btn" onclick="testeConexao()">Testar Conexão</button>
+            <div id="resultado1" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test">
+            <h3>2. Listar Clientes</h3>
+            <button class="btn" onclick="testeClientes()">Buscar Clientes</button>
+            <div id="resultado2" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test">
+            <h3>3. Listar Produtos</h3>
+            <button class="btn" onclick="testeProdutos()">Buscar Produtos</button>
+            <div id="resultado3" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            baseURL: 'https://api.vhsys.com.br/v2',
+            headers: {
+                'access-token': 'ZDabNAdHZaEKQUBQERUNFSNAIdKHHJ',
+                'secret-access-token': '33DnRiebFchQb2GyrVNTKxPHY6C8q',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        async function chamarAPI(endpoint) {
+            try {
+                console.log('Chamando:', config.baseURL + endpoint);
+                const response = await fetch(config.baseURL + endpoint, {
+                    method: 'GET',
+                    headers: config.headers
+                });
+
+                console.log('Status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return { sucesso: true, dados: data, status: response.status };
+                } else {
+                    const errorText = await response.text();
+                    return { sucesso: false, erro: `HTTP ${response.status}: ${errorText}`, status: response.status };
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                return { sucesso: false, erro: error.message, tipo: 'Network Error' };
+            }
+        }
+
+        function exibirResultado(id, resultado) {
+            const div = document.getElementById(id);
+            div.style.display = 'block';
+            
+            if (resultado.sucesso) {
+                div.className = 'result success';
+                div.innerHTML = `<strong>✅ SUCESSO!</strong><br><br>Status: ${resultado.status}<br><br><pre>${JSON.stringify(resultado.dados, null, 2)}</pre>`;
+            } else {
+                div.className = 'result error';
+                div.innerHTML = `<strong>❌ ERRO!</strong><br><br>Tipo: ${resultado.tipo || 'API Error'}<br>Mensagem: ${resultado.erro}<br>Status: ${resultado.status || 'N/A'}`;
+            }
+        }
+
+        async function testeConexao() {
+            console.log('🔍 Testando conectividade...');
+            const resultado = await chamarAPI('/clientes?limite=1');
+            exibirResultado('resultado1', resultado);
+        }
+
+        async function testeClientes() {
+            console.log('👥 Buscando clientes...');
+            const resultado = await chamarAPI('/clientes?limite=5');
+            exibirResultado('resultado2', resultado);
+        }
+
+        async function testeProdutos() {
+            console.log('📦 Buscando produtos...');
+            const resultado = await chamarAPI('/produtos?limite=5');
+            exibirResultado('resultado3', resultado);
+        }
+
+        // Teste automático ao carregar
+        window.onload = function() {
+            console.log('🚀 Página carregada. Clique nos botões para testar!');
+            console.log('Configuração:', config);
+        };
+    </script>
+</body>
+</html> 

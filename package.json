@@ -1,0 +1,35 @@
+{
+  "name": "vhsys-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Servidor MCP para integração com API VHSys",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsc && node build/index.js",
+    "test": "npx @modelcontextprotocol/inspector node build/index.js",
+    "remote": "node src/remote-mcp-server.js",
+    "remote:dev": "npm run build && node src/remote-mcp-server.js"
+  },
+  "keywords": [
+    "mcp",
+    "vhsys",
+    "erp",
+    "api"
+  ],
+  "author": "VHSys MCP Integration",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.1.0",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
