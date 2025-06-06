@@ -17,10 +17,5 @@
       "src": "/",
       "dest": "/api/index"
     }
-  ],
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 } 

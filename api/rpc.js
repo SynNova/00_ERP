@@ -8,7 +8,7 @@ function getVHSysAPI() {
   if (!vhsysApiInstance) {
     vhsysApiInstance = new VHSysAPI({
       token: process.env.VHSYS_TOKEN,
-      secret: process.env.VHSYS_SECRET,
+      secret: process.env.VHSYS_SECRET_TOKEN || process.env.VHSYS_SECRET,
       baseUrl: process.env.VHSYS_BASE_URL
     });
   }
