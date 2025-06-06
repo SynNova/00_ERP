@@ -18,11 +18,6 @@
       "dest": "/api/index"
     }
   ],
-  "env": {
-    "VHSYS_TOKEN": "@vhsys_token",
-    "VHSYS_SECRET": "@vhsys_secret",
-    "VHSYS_BASE_URL": "@vhsys_base_url"
-  },
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x"
