@@ -5,7 +5,7 @@
   "description": "Servidor MCP para integração com API VHSys",
   "main": "build/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'No build needed for Vercel - using serverless functions'",
     "start": "node build/index.js",
     "dev": "tsc && node build/index.js",
     "test": "npx @modelcontextprotocol/inspector node build/index.js",
