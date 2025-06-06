@@ -124,10 +124,12 @@ async function processRPCMessage(message) {
 }
 
 export default async function handler(req, res) {
-  // Configurar CORS
+  // Configurar CORS completo para MCP
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'false');
+  res.setHeader('Access-Control-Expose-Headers', '*');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();

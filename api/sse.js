@@ -4,10 +4,12 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 export default async function handler(req, res) {
-  // Configurar CORS
+  // Configurar CORS completo para MCP
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Cache-Control');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'false');
+  res.setHeader('Access-Control-Expose-Headers', '*');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -33,33 +35,41 @@ export default async function handler(req, res) {
   const connectionId = Date.now().toString();
   
   try {
-    // Enviar mensagem inicial
-    res.write(`data: {"type":"connection","status":"connected","id":"${connectionId}","platform":"vercel"}\n\n`);
-    
-    // Criar uma função para manter a conexão viva
-    const keepAlive = setInterval(() => {
-      res.write(`data: {"type":"heartbeat","timestamp":"${new Date().toISOString()}"}\n\n`);
-    }, 30000); // 30 segundos
+    // Verificar se é uma requisição inicial de conexão
+    if (req.headers.accept && req.headers.accept.includes('text/event-stream')) {
+      // Resposta SSE real
+      res.write(`data: {"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"tools":{},"resources":{}}}}\n\n`);
+      
+      // Manter conexão simples
+      const keepAlive = setInterval(() => {
+        res.write(`data: {"jsonrpc":"2.0","method":"notifications/message","params":{"level":"info","message":"Server alive"}}\n\n`);
+      }, 30000);
 
-    // Enviar informações de status
-    res.write(`data: {"type":"status","message":"MCP Server ready on Vercel","environment":{"hasToken":${!!process.env.VHSYS_TOKEN},"hasSecret":${!!process.env.VHSYS_SECRET},"hasBaseUrl":${!!process.env.VHSYS_BASE_URL}}}\n\n`);
+      req.on('close', () => {
+        console.log('🔌 Cliente desconectado');
+        clearInterval(keepAlive);
+      });
 
-    // Cleanup quando cliente desconecta
-    req.on('close', () => {
-      console.log('🔌 Cliente desconectado');
-      clearInterval(keepAlive);
-    });
-
-    // Manter conexão por até 25 segundos (limite do Vercel)
-    setTimeout(() => {
-      clearInterval(keepAlive);
-      res.write(`data: {"type":"timeout","message":"Connection timeout reached"}\n\n`);
-      res.end();
-    }, 25000);
+      // Timeout menor
+      setTimeout(() => {
+        clearInterval(keepAlive);
+        res.end();
+      }, 10000);
+    } else {
+      // Resposta JSON simples para verificação
+      res.status(200).json({
+        type: 'mcp-server',
+        status: 'ready',
+        protocol: 'sse',
+        endpoints: {
+          sse: '/sse',
+          rpc: '/rpc'
+        }
+      });
+    }
 
   } catch (error) {
     console.error('❌ Erro na conexão SSE:', error);
-    res.write(`data: {"type":"error","message":"Connection error: ${error.message}"}\n\n`);
-    res.end();
+    res.status(500).json({ error: error.message });
   }
 } 

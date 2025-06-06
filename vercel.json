@@ -4,6 +4,10 @@
   "outputDirectory": ".",
   "routes": [
     {
+      "src": "/.well-known/mcp",
+      "dest": "/api/.well-known/mcp"
+    },
+    {
       "src": "/sse",
       "dest": "/api/sse"
     },
